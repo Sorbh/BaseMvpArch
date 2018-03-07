@@ -1,0 +1,5 @@
+include ':app', ':basemvprx'
+
+
+include 'basemvp'
+project(':basemvp').projectDir = new File(settingsDir, '../BaseMvp/basemvp')
