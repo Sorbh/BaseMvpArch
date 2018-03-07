@@ -72,13 +72,18 @@ public abstract class BaseMvpActivity<P extends MvpPresenter> extends AppCompatA
     protected void onDestroy() {
         super.onDestroy();
 
-        //Check if activity is finishing or not
-        //isChangingConfigurations() is called during orientation change, we want to save presenter in that case
-        if (isFinishing() && !isChangingConfigurations()) {
-            if (mPresenter != null) {
-                mPresenter.onDetach();
-            }
+        //Check if onDestroy method is called because of orientation change, and activiy is not finishing. In that case keep the presenter
+        //only detach the view from presenter mPresenter.onDetach()
+        //keepPresenter = check if activity changing Configurations || check if activity is not finishing
+        boolean keepPresenter = (isChangingConfigurations() || !isFinishing());
 
+        if(mPresenter != null) mPresenter.onDetach();
+
+        //Activity is destroying, destroy the presenter too
+        if (!keepPresenter) {
+            if (mPresenter != null) {
+                mPresenter.onDestroy();
+            }
             PresenterManager.remove(activityId);
         }
     }

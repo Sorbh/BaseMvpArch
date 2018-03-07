@@ -1,9 +1,11 @@
 package in.unicodelabs.basemvp.base;
 
+import android.app.FragmentManager;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
@@ -62,23 +64,40 @@ public abstract class BaseMvpFragment<P extends MvpPresenter> extends Fragment i
         }
 
 
-        mPresenter.onAttach(this);
-
-
     }
 
+    //Attach view to presenter afte view has been created.
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+
+        mPresenter.onAttach(this);
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+
+        if (mPresenter != null) mPresenter.onDetach();
+    }
+
+    //Save present in case of configuration change or fragment move to backstack or fragment is not removing
     @Override
     public void onDestroy() {
         super.onDestroy();
 
-        //Check if activity is finishing or not
-        //isChangingConfigurations() is called during orientation change, we want to save presenter in that case
-        if (getActivity().isFinishing() && !getActivity().isChangingConfigurations()) {
+        // keepPresenter = check if activity changing Configurations || check if fragment is in backstack || check if fragment is not removing
+        boolean keepPresenter = getActivity().isChangingConfigurations() || getFragmentManager().getFragments().contains(this) || !isRemoving();
+
+
+        if (!keepPresenter) {
             if (mPresenter != null) {
                 mPresenter.onDetach();
             }
 
             PresenterManager.remove(fragmentId);
+        } else {
+            //Remain the presentor in presenter manager
         }
 
 
@@ -194,7 +213,7 @@ public abstract class BaseMvpFragment<P extends MvpPresenter> extends Fragment i
         View loadingView = getLoadingView();
         View errorView = getErrorView();
 
-        if(contentView ==null || loadingView == null || errorView ==null){
+        if (contentView == null || loadingView == null || errorView == null) {
             throw new NullPointerException("In Content,Loading or Error view, One of the view is null, Please check the xml for repective view ids");
         }
 
@@ -210,7 +229,7 @@ public abstract class BaseMvpFragment<P extends MvpPresenter> extends Fragment i
         View loadingView = getLoadingView();
         View errorView = getErrorView();
 
-        if(contentView ==null || loadingView == null || errorView ==null){
+        if (contentView == null || loadingView == null || errorView == null) {
             throw new NullPointerException("In Content,Loading or Error view, One of the view is null, Please check the xml for repective view ids");
         }
 
@@ -225,7 +244,7 @@ public abstract class BaseMvpFragment<P extends MvpPresenter> extends Fragment i
         View loadingView = getLoadingView();
         View errorView = getErrorView();
 
-        if(contentView ==null || loadingView == null || errorView ==null){
+        if (contentView == null || loadingView == null || errorView == null) {
             throw new NullPointerException("In Content,Loading or Error view, One of the view is null, Please check the xml for repective view ids");
         }
 

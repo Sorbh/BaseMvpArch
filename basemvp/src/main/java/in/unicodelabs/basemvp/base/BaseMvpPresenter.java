@@ -34,6 +34,9 @@ public abstract class BaseMvpPresenter<V extends MvpView> implements MvpPresente
         this.mMvpView = new WeakReference<V>(mMvpView);
     }
 
+    /**
+     * This method is being called when presenter detach from the view
+     */
     @Override
     public void onDetach() {
 
@@ -41,6 +44,14 @@ public abstract class BaseMvpPresenter<V extends MvpView> implements MvpPresente
             mMvpView.clear();
             mMvpView = null;
         }
+
+    }
+
+    /**
+     * this method is being called when presenter instance is destroying
+     */
+    @Override
+    public void onDestroy() {
 
     }
 
