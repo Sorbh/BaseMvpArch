@@ -1,5 +1,4 @@
 <resources>
-    <string name="app_name">BaseMVP</string>
 
     <!--Error Message-->
     <string name="some_error">Some Error Occured, Please Try again</string>

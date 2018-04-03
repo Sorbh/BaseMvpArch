@@ -34,3 +34,5 @@ dependencies {
     implementation "com.android.support:design:"+rootProject.supportLibraryVersion
     implementation 'com.android.support:appcompat-v7:'+rootProject.supportLibraryVersion
 }
+
+apply from: 'deploy.gradle'

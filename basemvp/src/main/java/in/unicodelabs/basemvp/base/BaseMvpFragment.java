@@ -165,8 +165,14 @@ public abstract class BaseMvpFragment<P extends MvpPresenter> extends Fragment i
 
     @Override
     public void showSnackbar(String message) {
-        Snackbar snack = Snackbar.make(getActivity().findViewById(android.R.id.content), message, Snackbar.LENGTH_LONG);
-        snack.setDuration(R.integer.snack_duration);
+        final Snackbar snack = Snackbar.make(getActivity().findViewById(android.R.id.content), message, Snackbar.LENGTH_LONG);
+        snack.setDuration(Snackbar.LENGTH_SHORT);
+        snack.setAction("OK", new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                snack.dismiss();
+            }
+        });
         snack.show();
     }
 
