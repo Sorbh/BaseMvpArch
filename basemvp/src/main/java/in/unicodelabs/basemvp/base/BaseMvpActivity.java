@@ -2,6 +2,7 @@ package in.unicodelabs.basemvp.base;
 
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.net.ConnectivityManager;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
@@ -77,7 +78,7 @@ public abstract class BaseMvpActivity<P extends MvpPresenter> extends AppCompatA
         //keepPresenter = check if activity changing Configurations || check if activity is not finishing
         boolean keepPresenter = (isChangingConfigurations() || !isFinishing());
 
-        if(mPresenter != null) mPresenter.onDetach();
+        if (mPresenter != null) mPresenter.onDetach();
 
         //Activity is destroying, destroy the presenter too
         if (!keepPresenter) {
@@ -100,12 +101,14 @@ public abstract class BaseMvpActivity<P extends MvpPresenter> extends AppCompatA
     @Override
     public void showLoading() {
         hideLoading();
+        hideKeyboard();
         mProgressDialog = DialogUtils.showLoadingDialog(context);
     }
 
     @Override
     public void showLoading(String loading_message) {
         hideLoading();
+        hideKeyboard();
         mProgressDialog = DialogUtils.showLoadingDialog(context, loading_message);
     }
 
@@ -123,6 +126,7 @@ public abstract class BaseMvpActivity<P extends MvpPresenter> extends AppCompatA
 
     @Override
     public void showMessage(String message) {
+        hideKeyboard();
         if (message != null)
             DialogUtils.infoPopup(context, message, getString(R.string.ok));
         else
@@ -137,11 +141,13 @@ public abstract class BaseMvpActivity<P extends MvpPresenter> extends AppCompatA
 
     @Override
     public void onError(int resId) {
+        hideKeyboard();
         DialogUtils.infoPopup(context, getString(resId), getString(R.string.ok));
     }
 
     @Override
     public void onError(String message) {
+        hideKeyboard();
         if (message != null)
             DialogUtils.infoPopup(context, message, getString(R.string.ok));
         else
@@ -151,6 +157,7 @@ public abstract class BaseMvpActivity<P extends MvpPresenter> extends AppCompatA
 
     @Override
     public void showSnackbar(String message) {
+        hideKeyboard();
         final Snackbar snack = Snackbar.make(findViewById(android.R.id.content), message, Snackbar.LENGTH_LONG);
         snack.setDuration(Snackbar.LENGTH_SHORT);
         snack.setAction("OK", new View.OnClickListener() {
@@ -170,14 +177,19 @@ public abstract class BaseMvpActivity<P extends MvpPresenter> extends AppCompatA
     @Override
     public boolean isNetworkConnected() {
         //You logic the detects network connection
-        return true;
+        ConnectivityManager cm = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+
+        if (cm.getActiveNetworkInfo() != null && cm.getActiveNetworkInfo().isAvailable() && cm.getActiveNetworkInfo().isConnected()) {
+            return true;
+        } else {
+            return false;
+        }
     }
 
     @Override
     public void hideKeyboard() {
         KeyboardUtils.hideKeyboard(context);
     }
-
 
 
     //Content -load - Error view related methods
@@ -202,7 +214,7 @@ public abstract class BaseMvpActivity<P extends MvpPresenter> extends AppCompatA
         View loadingView = getLoadingView();
         View errorView = getErrorView();
 
-        if(contentView ==null || loadingView == null || errorView ==null){
+        if (contentView == null || loadingView == null || errorView == null) {
             throw new NullPointerException("In Content,Loading or Error view, One of the view is null, Please check the xml for repective view ids");
         }
 
@@ -218,7 +230,7 @@ public abstract class BaseMvpActivity<P extends MvpPresenter> extends AppCompatA
         View loadingView = getLoadingView();
         View errorView = getErrorView();
 
-        if(contentView ==null || loadingView == null || errorView ==null){
+        if (contentView == null || loadingView == null || errorView == null) {
             throw new NullPointerException("In Content,Loading or Error view, One of the view is null, Please check the xml for repective view ids");
         }
 
@@ -233,7 +245,7 @@ public abstract class BaseMvpActivity<P extends MvpPresenter> extends AppCompatA
         View loadingView = getLoadingView();
         View errorView = getErrorView();
 
-        if(contentView ==null || loadingView == null || errorView ==null){
+        if (contentView == null || loadingView == null || errorView == null) {
             throw new NullPointerException("In Content,Loading or Error view, One of the view is null, Please check the xml for repective view ids");
         }
 

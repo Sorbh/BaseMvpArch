@@ -77,7 +77,7 @@ public abstract class BaseMvpPresenter<V extends MvpView> implements MvpPresente
             throw new IllegalStateException(
                     "No View attached to Presenter.");
         }else {
-            Log.d("BaseMVP","No View attached to Presenter");
+            Log.d(getClass().getSimpleName(),"No View attached to Presenter");
         }
     }
 

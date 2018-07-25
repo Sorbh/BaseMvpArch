@@ -2,6 +2,7 @@ package in.unicodelabs.basemvp.base;
 
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.net.ConnectivityManager;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
@@ -22,6 +23,7 @@ public abstract class BaseMvpDialogFragment<P extends MvpPresenter> extends Dial
     public Context context;
 
     public abstract P createPresenter();
+
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -48,6 +50,18 @@ public abstract class BaseMvpDialogFragment<P extends MvpPresenter> extends Dial
     }
 
     @Override
+    public void showLoading(String loading_message) {
+        hideLoading();
+        mProgressDialog = DialogUtils.showLoadingDialog(context, loading_message);
+    }
+
+    @Override
+    public void showLoading(int resId) {
+        showLoading(getString(resId));
+    }
+
+
+    @Override
     public void hideLoading() {
         if (mProgressDialog != null && mProgressDialog.isShowing()) {
             mProgressDialog.cancel();
@@ -57,9 +71,9 @@ public abstract class BaseMvpDialogFragment<P extends MvpPresenter> extends Dial
     @Override
     public void showMessage(String message) {
         if (message != null)
-            DialogUtils.infoPopup(context, message,getString(R.string.ok));
+            DialogUtils.infoPopup(context, message, getString(R.string.ok));
         else
-            DialogUtils.infoPopup(context, getString(R.string.some_error),getString(R.string.ok));
+            DialogUtils.infoPopup(context, getString(R.string.some_error), getString(R.string.ok));
     }
 
     @Override
@@ -70,15 +84,15 @@ public abstract class BaseMvpDialogFragment<P extends MvpPresenter> extends Dial
 
     @Override
     public void onError(int resId) {
-        DialogUtils.infoPopup(context, getString(resId),getString(R.string.ok));
+        DialogUtils.infoPopup(context, getString(resId), getString(R.string.ok));
     }
 
     @Override
     public void onError(String message) {
         if (message != null)
-            DialogUtils.infoPopup(context, message,getString(R.string.ok));
+            DialogUtils.infoPopup(context, message, getString(R.string.ok));
         else
-            DialogUtils.infoPopup(context, getString(R.string.some_error),getString(R.string.ok));
+            DialogUtils.infoPopup(context, getString(R.string.some_error), getString(R.string.ok));
     }
 
     @Override
@@ -95,7 +109,13 @@ public abstract class BaseMvpDialogFragment<P extends MvpPresenter> extends Dial
 
     @Override
     public boolean isNetworkConnected() {
-        return false;
+        ConnectivityManager cm = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+
+        if (cm.getActiveNetworkInfo() != null && cm.getActiveNetworkInfo().isAvailable() && cm.getActiveNetworkInfo().isConnected()) {
+            return true;
+        } else {
+            return false;
+        }
     }
 
     @Override
@@ -126,7 +146,7 @@ public abstract class BaseMvpDialogFragment<P extends MvpPresenter> extends Dial
         View loadingView = getLoadingView();
         View errorView = getErrorView();
 
-        if(contentView ==null || loadingView == null || errorView ==null){
+        if (contentView == null || loadingView == null || errorView == null) {
             throw new NullPointerException("In Content,Loading or Error view, One of the view is null, Please check the xml for repective view ids");
         }
 
@@ -142,7 +162,7 @@ public abstract class BaseMvpDialogFragment<P extends MvpPresenter> extends Dial
         View loadingView = getLoadingView();
         View errorView = getErrorView();
 
-        if(contentView ==null || loadingView == null || errorView ==null){
+        if (contentView == null || loadingView == null || errorView == null) {
             throw new NullPointerException("In Content,Loading or Error view, One of the view is null, Please check the xml for repective view ids");
         }
 
@@ -157,7 +177,7 @@ public abstract class BaseMvpDialogFragment<P extends MvpPresenter> extends Dial
         View loadingView = getLoadingView();
         View errorView = getErrorView();
 
-        if(contentView ==null || loadingView == null || errorView ==null){
+        if (contentView == null || loadingView == null || errorView == null) {
             throw new NullPointerException("In Content,Loading or Error view, One of the view is null, Please check the xml for repective view ids");
         }
 
